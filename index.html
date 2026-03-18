@@ -1,0 +1,1413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crash Bet - Cash Out Game</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --success: #10b981;
+            --success-dark: #059669;
+            --danger: #ef4444;
+            --danger-dark: #dc2626;
+            --warning: #f59e0b;
+            --bg-dark: #0f172a;
+            --bg-card: #1e293b;
+            --bg-input: #334155;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --border: #475569;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%);
+            min-height: 100vh;
+            color: var(--text-primary);
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, var(--primary), var(--success));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: 800;
+        }
+
+        .logo-text {
+            font-size: 28px;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary), var(--success));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .balance-display {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .balance {
+            background: var(--bg-card);
+            padding: 12px 24px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .balance-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .balance-amount {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--success);
+        }
+
+        /* Main Game Area */
+        .game-layout {
+            display: grid;
+            grid-template-columns: 1fr 380px;
+            gap: 24px;
+        }
+
+        @media (max-width: 1024px) {
+            .game-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Game Canvas Area */
+        .game-area {
+            background: var(--bg-card);
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .game-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .game-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .status-waiting {
+            background: rgba(99, 102, 241, 0.2);
+            color: var(--primary);
+        }
+
+        .status-running {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--success);
+        }
+
+        .status-crashed {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--danger);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+        }
+
+        .status-waiting .status-dot {
+            background: var(--primary);
+        }
+
+        .status-running .status-dot {
+            background: var(--success);
+        }
+
+        .status-crashed .status-dot {
+            background: var(--danger);
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .canvas-container {
+            position: relative;
+            height: 450px;
+            background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
+        }
+
+        #gameCanvas {
+            width: 100%;
+            height: 100%;
+        }
+
+        .multiplier-display {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            z-index: 10;
+        }
+
+        .multiplier-value {
+            font-size: 72px;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary), var(--success));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1;
+        }
+
+        .multiplier-label {
+            font-size: 16px;
+            color: var(--text-secondary);
+            margin-top: 8px;
+        }
+
+        .crashed-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(239, 68, 68, 0.1);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            z-index: 20;
+        }
+
+        .crashed-overlay.active {
+            display: flex;
+        }
+
+        .crashed-text {
+            font-size: 48px;
+            font-weight: 800;
+            color: var(--danger);
+            text-transform: uppercase;
+        }
+
+        .crashed-multiplier {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-top: 10px;
+        }
+
+        /* History Bar */
+        .history-bar {
+            display: flex;
+            gap: 8px;
+            padding: 16px 24px;
+            border-top: 1px solid var(--border);
+            overflow-x: auto;
+            scrollbar-width: thin;
+            scrollbar-color: var(--border) var(--bg-card);
+        }
+
+        .history-item {
+            flex-shrink: 0;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            min-width: 70px;
+            text-align: center;
+        }
+
+        .history-win {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--success);
+        }
+
+        .history-loss {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--danger);
+        }
+
+        /* Betting Panel */
+        .betting-panel {
+            background: var(--bg-card);
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .panel-title {
+            font-size: 18px;
+            font-weight: 600;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .bet-input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .input-label {
+            font-size: 14px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .bet-input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .currency-symbol {
+            position: absolute;
+            left: 16px;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        .bet-input {
+            width: 100%;
+            padding: 16px 16px 16px 40px;
+            background: var(--bg-input);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-size: 18px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .bet-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+
+        .quick-bets {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .quick-bet-btn {
+            padding: 10px;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .quick-bet-btn:hover {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .auto-cashout-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .auto-cashout-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            background: var(--bg-input);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .auto-cashout-toggle.active {
+            background: rgba(16, 185, 129, 0.2);
+            border: 1px solid var(--success);
+        }
+
+        .toggle-label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .toggle-switch {
+            width: 44px;
+            height: 24px;
+            background: var(--border);
+            border-radius: 12px;
+            position: relative;
+            transition: all 0.3s;
+        }
+
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: var(--text-primary);
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+            transition: all 0.3s;
+        }
+
+        .auto-cashout-toggle.active .toggle-switch {
+            background: var(--success);
+        }
+
+        .auto-cashout-toggle.active .toggle-switch::after {
+            left: 22px;
+        }
+
+        .auto-cashout-input {
+            display: none;
+            margin-top: 12px;
+        }
+
+        .auto-cashout-toggle.active + .auto-cashout-input {
+            display: flex;
+        }
+
+        .action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: auto;
+        }
+
+        .btn {
+            padding: 18px 24px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--success), var(--success-dark));
+            color: white;
+        }
+
+        .btn-success:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(16, 185, 129, 0.4);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger), var(--danger-dark));
+            color: white;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .btn-cashout {
+            animation: cashoutPulse 1s infinite;
+        }
+
+        @keyframes cashoutPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        /* Stats Section */
+        .stats-section {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+        }
+
+        .stat-card {
+            background: var(--bg-input);
+            padding: 16px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+            text-transform: uppercase;
+        }
+
+        .stat-value.win {
+            color: var(--success);
+        }
+
+        .stat-value.loss {
+            color: var(--danger);
+        }
+
+        /* Live Bets */
+        .live-bets {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+        }
+
+        .live-bets-title {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .live-bet-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .live-bet-item:last-child {
+            border-bottom: none;
+        }
+
+        .player-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .player-avatar {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--primary), var(--success));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .player-name {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .player-bet {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .player-cashout {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--success);
+        }
+
+        .player-waiting {
+            font-size: 14px;
+            color: var(--warning);
+        }
+
+        /* Countdown Overlay */
+        .countdown-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(15, 23, 42, 0.95);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            z-index: 30;
+        }
+
+        .countdown-overlay.active {
+            display: flex;
+        }
+
+        .countdown-text {
+            font-size: 18px;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+        }
+
+        .countdown-value {
+            font-size: 96px;
+            font-weight: 800;
+            color: var(--primary);
+            animation: countdownPulse 1s infinite;
+        }
+
+        @keyframes countdownPulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+
+        /* Toast Notifications */
+        .toast-container {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .toast {
+            padding: 16px 24px;
+            border-radius: 12px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: slideIn 0.3s ease;
+            min-width: 300px;
+        }
+
+        .toast-success {
+            border-color: var(--success);
+        }
+
+        .toast-error {
+            border-color: var(--danger);
+        }
+
+        .toast-icon {
+            font-size: 20px;
+        }
+
+        .toast-message {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* Footer Credit */
+        .footer-credit {
+            text-align: center;
+            padding: 30px 0;
+            margin-top: 40px;
+            border-top: 1px solid var(--border);
+        }
+
+        .credit-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(16, 185, 129, 0.1));
+            border: 1px solid var(--border);
+            border-radius: 50px;
+            transition: all 0.3s;
+        }
+
+        .credit-badge:hover {
+            border-color: var(--primary);
+            box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
+        }
+
+        .credit-text {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .credit-text span {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .credit-heart {
+            color: var(--danger);
+            animation: heartBeat 1.5s infinite;
+            font-size: 18px;
+        }
+
+        @keyframes heartBeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        .designer-name {
+            font-size: 16px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary), var(--success));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 1px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 16px;
+            }
+
+            .multiplier-value {
+                font-size: 48px;
+            }
+
+            .canvas-container {
+                height: 300px;
+            }
+
+            .betting-panel {
+                padding: 16px;
+            }
+
+            .btn {
+                padding: 14px 20px;
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <div class="logo-icon">🚀</div>
+                <span class="logo-text">CrashBet</span>
+            </div>
+            <div class="balance-display">
+                <div class="balance">
+                    <div class="balance-label">Balance</div>
+                    <div class="balance-amount">$<span id="balance">1000.00</span></div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Game Layout -->
+        <div class="game-layout">
+            <!-- Game Area -->
+            <div class="game-area">
+                <div class="game-header">
+                    <h2 class="game-title">🎮 Crash Game</h2>
+                    <div class="game-status status-waiting" id="gameStatus">
+                        <span class="status-dot"></span>
+                        <span id="statusText">Waiting</span>
+                    </div>
+                </div>
+
+                <div class="canvas-container">
+                    <canvas id="gameCanvas"></canvas>
+                    <div class="multiplier-display">
+                        <div class="multiplier-value" id="multiplierValue">1.00x</div>
+                        <div class="multiplier-label">Current Multiplier</div>
+                    </div>
+                    <div class="crashed-overlay" id="crashedOverlay">
+                        <div class="crashed-text">CRASHED</div>
+                        <div class="crashed-multiplier" id="crashedMultiplier">2.45x</div>
+                    </div>
+                    <div class="countdown-overlay" id="countdownOverlay">
+                        <div class="countdown-text">Next Round Starting In</div>
+                        <div class="countdown-value" id="countdownValue">5</div>
+                    </div>
+                </div>
+
+                <div class="history-bar" id="historyBar">
+                    <!-- History items will be added here -->
+                </div>
+            </div>
+
+            <!-- Betting Panel -->
+            <div class="betting-panel">
+                <h3 class="panel-title">Place Your Bet</h3>
+
+                <div class="bet-input-group">
+                    <label class="input-label">Bet Amount</label>
+                    <div class="bet-input-wrapper">
+                        <span class="currency-symbol">$</span>
+                        <input type="number" class="bet-input" id="betAmount" value="10" min="1" max="1000" step="1">
+                    </div>
+                    <div class="quick-bets">
+                        <button class="quick-bet-btn" data-amount="5">$5</button>
+                        <button class="quick-bet-btn" data-amount="10">$10</button>
+                        <button class="quick-bet-btn" data-amount="25">$25</button>
+                        <button class="quick-bet-btn" data-amount="50">$50</button>
+                        <button class="quick-bet-btn" data-amount="100">$100</button>
+                        <button class="quick-bet-btn" data-amount="250">$250</button>
+                        <button class="quick-bet-btn" data-amount="500">$500</button>
+                        <button class="quick-bet-btn" data-amount="1000">$1K</button>
+                    </div>
+                </div>
+
+                <div class="auto-cashout-group">
+                    <div class="auto-cashout-toggle" id="autoCashoutToggle">
+                        <span class="toggle-label">
+                            <span>⚡ Auto Cashout</span>
+                        </span>
+                        <div class="toggle-switch"></div>
+                    </div>
+                    <div class="auto-cashout-input">
+                        <label class="input-label">Cashout At Multiplier</label>
+                        <div class="bet-input-wrapper">
+                            <input type="number" class="bet-input" id="autoCashoutValue" value="2.0" min="1.1" max="100" step="0.1">
+                            <span class="currency-symbol" style="left: auto; right: 16px;">x</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn btn-primary" id="placeBetBtn">Place Bet</button>
+                    <button class="btn btn-success btn-cashout" id="cashoutBtn" disabled>Cash Out</button>
+                    <button class="btn btn-danger" id="cancelBetBtn" disabled>Cancel Bet</button>
+                </div>
+
+                <div class="stats-section">
+                    <div class="stat-card">
+                        <div class="stat-value win" id="totalWins">0</div>
+                        <div class="stat-label">Total Wins</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value loss" id="totalLosses">0</div>
+                        <div class="stat-label">Total Losses</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="biggestWin">$0</div>
+                        <div class="stat-label">Biggest Win</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="currentStreak">0</div>
+                        <div class="stat-label">Current Streak</div>
+                    </div>
+                </div>
+
+                <div class="live-bets">
+                    <div class="live-bets-title">👥 Live Bets</div>
+                    <div id="liveBetsList">
+                        <!-- Live bets will be added here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer Credit -->
+        <footer class="footer-credit">
+            <div class="credit-badge">
+                <span class="credit-heart">❤</span>
+                <span class="credit-text">Designed by <span class="designer-name">Benson Maina</span></span>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script>
+        // Game State
+        const state = {
+            balance: 1000,
+            currentBet: 0,
+            currentMultiplier: 1.00,
+            crashPoint: 0,
+            gameStatus: 'waiting',
+            hasBet: false,
+            hasCashedOut: false,
+            cashoutMultiplier: 0,
+            autoCashoutEnabled: false,
+            autoCashoutValue: 2.0,
+            history: [],
+            stats: {
+                wins: 0,
+                losses: 0,
+                biggestWin: 0,
+                streak: 0
+            },
+            countdown: 5,
+            liveBets: []
+        };
+
+        // DOM Elements
+        const elements = {
+            balance: document.getElementById('balance'),
+            multiplierValue: document.getElementById('multiplierValue'),
+            gameStatus: document.getElementById('gameStatus'),
+            statusText: document.getElementById('statusText'),
+            crashedOverlay: document.getElementById('crashedOverlay'),
+            crashedMultiplier: document.getElementById('crashedMultiplier'),
+            countdownOverlay: document.getElementById('countdownOverlay'),
+            countdownValue: document.getElementById('countdownValue'),
+            betAmount: document.getElementById('betAmount'),
+            autoCashoutToggle: document.getElementById('autoCashoutToggle'),
+            autoCashoutValue: document.getElementById('autoCashoutValue'),
+            placeBetBtn: document.getElementById('placeBetBtn'),
+            cashoutBtn: document.getElementById('cashoutBtn'),
+            cancelBetBtn: document.getElementById('cancelBetBtn'),
+            historyBar: document.getElementById('historyBar'),
+            liveBetsList: document.getElementById('liveBetsList'),
+            totalWins: document.getElementById('totalWins'),
+            totalLosses: document.getElementById('totalLosses'),
+            biggestWin: document.getElementById('biggestWin'),
+            currentStreak: document.getElementById('currentStreak'),
+            toastContainer: document.getElementById('toastContainer'),
+            canvas: document.getElementById('gameCanvas')
+        };
+
+        // Canvas Setup
+        const ctx = elements.canvas.getContext('2d');
+        let animationId = null;
+        let graphPoints = [];
+
+        function resizeCanvas() {
+            const container = elements.canvas.parentElement;
+            elements.canvas.width = container.offsetWidth * window.devicePixelRatio;
+            elements.canvas.height = container.offsetHeight * window.devicePixelRatio;
+            ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+        }
+
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        // Generate Crash Point
+        function generateCrashPoint() {
+            const houseEdge = 0.04;
+            const random = Math.random();
+            const crashPoint = (1 - houseEdge) / (1 - random);
+            return Math.max(1.00, Math.min(crashPoint, 100));
+        }
+
+        // Update Balance Display
+        function updateBalance() {
+            elements.balance.textContent = state.balance.toFixed(2);
+        }
+
+        // Update Stats Display
+        function updateStats() {
+            elements.totalWins.textContent = state.stats.wins;
+            elements.totalLosses.textContent = state.stats.losses;
+            elements.biggestWin.textContent = `$${state.stats.biggestWin.toFixed(2)}`;
+            elements.currentStreak.textContent = state.stats.streak;
+        }
+
+        // Update Game Status
+        function updateGameStatus(status, text) {
+            state.gameStatus = status;
+            elements.gameStatus.className = `game-status status-${status}`;
+            elements.statusText.textContent = text;
+        }
+
+        // Toast Notification
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+            toast.innerHTML = `
+                <span class="toast-icon">${type === 'success' ? '✅' : '❌'}</span>
+                <span class="toast-message">${message}</span>
+            `;
+            elements.toastContainer.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.animation = 'slideIn 0.3s ease reverse';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // Add to History
+        function addToHistory(multiplier) {
+            state.history.unshift(multiplier);
+            if (state.history.length > 20) {
+                state.history.pop();
+            }
+
+            const historyItem = document.createElement('div');
+            historyItem.className = `history-item ${multiplier >= 2 ? 'history-win' : 'history-loss'}`;
+            historyItem.textContent = `${multiplier.toFixed(2)}x`;
+
+            elements.historyBar.insertBefore(historyItem, elements.historyBar.firstChild);
+
+            if (elements.historyBar.children.length > 20) {
+                elements.historyBar.lastChild.remove();
+            }
+        }
+
+        // Generate Live Bets
+        function generateLiveBets() {
+            const names = ['Player123', 'LuckyWin', 'CryptoKing', 'BetMaster', 'HighRoller', 'QuickCash', 'MoonBoy', 'DiamondHands'];
+            state.liveBets = [];
+
+            const numBets = Math.floor(Math.random() * 5) + 3;
+            for (let i = 0; i < numBets; i++) {
+                state.liveBets.push({
+                    name: names[Math.floor(Math.random() * names.length)] + Math.floor(Math.random() * 100),
+                    bet: Math.floor(Math.random() * 500) + 10,
+                    cashoutAt: (Math.random() * 5 + 1.1).toFixed(2),
+                    cashedOut: false
+                });
+            }
+
+            renderLiveBets();
+        }
+
+        // Render Live Bets
+        function renderLiveBets() {
+            elements.liveBetsList.innerHTML = '';
+
+            state.liveBets.forEach(bet => {
+                const betItem = document.createElement('div');
+                betItem.className = 'live-bet-item';
+
+                const initials = bet.name.substring(0, 2).toUpperCase();
+                const status = bet.cashedOut 
+                    ? `<span class="player-cashout">${bet.cashoutAt}x</span>`
+                    : state.gameStatus === 'running'
+                    ? `<span class="player-waiting">Playing</span>`
+                    : `<span class="player-bet">$${bet.bet}</span>`;
+
+                betItem.innerHTML = `
+                    <div class="player-info">
+                        <div class="player-avatar">${initials}</div>
+                        <div>
+                            <div class="player-name">${bet.name}</div>
+                            <div class="player-bet">$${bet.bet}</div>
+                        </div>
+                    </div>
+                    ${status}
+                `;
+
+                elements.liveBetsList.appendChild(betItem);
+            });
+        }
+
+        // Draw Game Canvas
+        function drawCanvas() {
+            const width = elements.canvas.offsetWidth;
+            const height = elements.canvas.offsetHeight;
+
+            ctx.clearRect(0, 0, width, height);
+
+            // Draw grid
+            ctx.strokeStyle = 'rgba(71, 85, 105, 0.3)';
+            ctx.lineWidth = 1;
+
+            for (let i = 0; i < 5; i++) {
+                const x = (width / 5) * i;
+                ctx.beginPath();
+                ctx.moveTo(x, 0);
+                ctx.lineTo(x, height);
+                ctx.stroke();
+            }
+
+            for (let i = 0; i < 5; i++) {
+                const y = (height / 5) * i;
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.lineTo(width, y);
+                ctx.stroke();
+            }
+
+            // Draw graph line
+            if (graphPoints.length > 1 && state.gameStatus === 'running') {
+                const gradient = ctx.createLinearGradient(0, 0, width, height);
+                gradient.addColorStop(0, '#10b981');
+                gradient.addColorStop(1, '#6366f1');
+
+                ctx.strokeStyle = gradient;
+                ctx.lineWidth = 4;
+                ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
+
+                ctx.beginPath();
+                graphPoints.forEach((point, index) => {
+                    const x = (point.t / 10) * width;
+                    const y = height - (point.m / 10) * height;
+
+                    if (index === 0) {
+                        ctx.moveTo(x, y);
+                    } else {
+                        ctx.lineTo(x, y);
+                    }
+                });
+                ctx.stroke();
+
+                // Draw area under curve
+                ctx.lineTo(width, height);
+                ctx.lineTo(0, height);
+                ctx.closePath();
+
+                const areaGradient = ctx.createLinearGradient(0, 0, 0, height);
+                areaGradient.addColorStop(0, 'rgba(16, 185, 129, 0.3)');
+                areaGradient.addColorStop(1, 'rgba(99, 102, 241, 0.1)');
+                ctx.fillStyle = areaGradient;
+                ctx.fill();
+
+                // Draw rocket/point
+                const lastPoint = graphPoints[graphPoints.length - 1];
+                if (lastPoint) {
+                    const x = (lastPoint.t / 10) * width;
+                    const y = height - (lastPoint.m / 10) * height;
+
+                    // Glow effect
+                    const glow = ctx.createRadialGradient(x, y, 0, x, y, 20);
+                    glow.addColorStop(0, 'rgba(16, 185, 129, 0.8)');
+                    glow.addColorStop(1, 'rgba(16, 185, 129, 0)');
+                    ctx.fillStyle = glow;
+                    ctx.beginPath();
+                    ctx.arc(x, y, 20, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    // Point
+                    ctx.fillStyle = '#10b981';
+                    ctx.beginPath();
+                    ctx.arc(x, y, 8, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+
+            // Draw multiplier labels on Y-axis
+            ctx.fillStyle = '#94a3b8';
+            ctx.font = '12px Inter';
+            ctx.textAlign = 'right';
+            for (let i = 1; i <= 5; i++) {
+                const y = height - (height / 5) * i;
+                ctx.fillText(`${i}x`, width - 10, y + 4);
+            }
+        }
+
+        // Game Loop
+        function gameLoop() {
+            if (state.gameStatus !== 'running') return;
+
+            const timeElapsed = Date.now() / 1000;
+            state.currentMultiplier = 1.00 + (Math.pow(timeElapsed, 2) * 0.1);
+
+            graphPoints.push({
+                t: timeElapsed,
+                m: state.currentMultiplier
+            });
+
+            elements.multiplierValue.textContent = `${state.currentMultiplier.toFixed(2)}x`;
+
+            if (state.autoCashoutEnabled && !state.hasCashedOut && state.hasBet) {
+                if (state.currentMultiplier >= state.autoCashoutValue) {
+                    cashOut();
+                }
+            }
+
+            if (state.currentMultiplier >= state.crashPoint) {
+                crash();
+                return;
+            }
+
+            drawCanvas();
+            renderLiveBets();
+
+            animationId = requestAnimationFrame(gameLoop);
+        }
+
+        // Start Countdown
+        function startCountdown() {
+            updateGameStatus('waiting', 'Waiting');
+            elements.countdownOverlay.classList.add('active');
+            elements.crashedOverlay.classList.remove('active');
+            state.countdown = 5;
+
+            const countdownInterval = setInterval(() => {
+                state.countdown--;
+                elements.countdownValue.textContent = state.countdown;
+
+                if (state.countdown <= 0) {
+                    clearInterval(countdownInterval);
+                    elements.countdownOverlay.classList.remove('active');
+                    startRound();
+                }
+            }, 1000);
+        }
+
+        // Start Round
+        function startRound() {
+            state.currentMultiplier = 1.00;
+            state.crashPoint = generateCrashPoint();
+            state.hasCashedOut = false;
+            state.cashoutMultiplier = 0;
+            graphPoints = [];
+
+            updateGameStatus('running', 'Running');
+            elements.multiplierValue.textContent = '1.00x';
+            elements.multiplierValue.style.background = 'linear-gradient(135deg, #10b981, #6366f1)';
+            elements.multiplierValue.style.webkitBackgroundClip = 'text';
+            elements.multiplierValue.style.webkitTextFillColor = 'transparent';
+
+            elements.placeBetBtn.disabled = true;
+            elements.cancelBetBtn.disabled = true;
+
+            if (state.hasBet) {
+                elements.cashoutBtn.disabled = false;
+            }
+
+            generateLiveBets();
+            gameLoop();
+
+            console.log('Crash Point (debug):', state.crashPoint.toFixed(2));
+        }
+
+        // Crash
+        function crash() {
+            if (animationId) {
+                cancelAnimationFrame(animationId);
+            }
+
+            updateGameStatus('crashed', 'Crashed');
+            elements.crashedMultiplier.textContent = `${state.crashPoint.toFixed(2)}x`;
+            elements.crashedOverlay.classList.add('active');
+
+            elements.multiplierValue.textContent = `${state.crashPoint.toFixed(2)}x`;
+            elements.multiplierValue.style.background = 'linear-gradient(135deg, #ef4444, #dc2626)';
+            elements.multiplierValue.style.webkitBackgroundClip = 'text';
+            elements.multiplierValue.style.webkitTextFillColor = 'transparent';
+
+            if (state.hasBet && !state.hasCashedOut) {
+                state.stats.losses++;
+                state.stats.streak = state.stats.streak > 0 ? -1 : -1;
+                showToast(`Round crashed at ${state.crashPoint.toFixed(2)}x. You lost $${state.currentBet.toFixed(2)}`, 'error');
+            }
+
+            state.liveBets.forEach(bet => {
+                if (!bet.cashedOut && parseFloat(bet.cashoutAt) <= state.crashPoint) {
+                    bet.cashedOut = true;
+                }
+            });
+
+            addToHistory(state.crashPoint);
+            updateStats();
+
+            elements.cashoutBtn.disabled = true;
+            elements.placeBetBtn.disabled = false;
+
+            state.hasBet = false;
+            state.currentBet = 0;
+
+            setTimeout(() => {
+                startCountdown();
+            }, 3000);
+        }
+
+        // Place Bet
+        function placeBet() {
+            const betAmount = parseFloat(elements.betAmount.value);
+
+            if (isNaN(betAmount) || betAmount < 1) {
+                showToast('Please enter a valid bet amount (minimum $1)', 'error');
+                return;
+            }
+
+            if (betAmount > state.balance) {
+                showToast('Insufficient balance', 'error');
+                return;
+            }
+
+            if (state.gameStatus !== 'waiting') {
+                showToast('Please wait for the next round', 'error');
+                return;
+            }
+
+            state.balance -= betAmount;
+            state.currentBet = betAmount;
+            state.hasBet = true;
+
+            updateBalance();
+
+            elements.placeBetBtn.disabled = true;
+            elements.cancelBetBtn.disabled = false;
+            elements.betAmount.disabled = true;
+
+            showToast(`Bet placed: $${betAmount.toFixed(2)}`, 'success');
+        }
+
+        // Cancel Bet
+        function cancelBet() {
+            if (!state.hasBet) return;
+
+            state.balance += state.currentBet;
+            state.currentBet = 0;
+            state.hasBet = false;
+
+            updateBalance();
+
+            elements.placeBetBtn.disabled = false;
+            elements.cancelBetBtn.disabled = true;
+            elements.betAmount.disabled = false;
+
+            showToast('Bet cancelled', 'success');
+        }
+
+        // Cash Out
+        function cashOut() {
+            if (!state.hasBet || state.hasCashedOut || state.gameStatus !== 'running') return;
+
+            state.hasCashedOut = true;
+            state.cashoutMultiplier = state.currentMultiplier;
+            const winAmount = state.currentBet * state.cashoutMultiplier;
+
+            state.balance += winAmount;
+            state.stats.wins++;
+            state.stats.streak = state.stats.streak >= 0 ? state.stats.streak + 1 : 1;
+
+            if (winAmount > state.stats.biggestWin) {
+                state.stats.biggestWin = winAmount;
+            }
+
+            updateBalance();
+            updateStats();
+
+            elements.cashoutBtn.disabled = true;
+
+            showToast(`Cashed out at ${state.cashoutMultiplier.toFixed(2)}x! Won $${winAmount.toFixed(2)}`, 'success');
+
+            state.liveBets.forEach(bet => {
+                if (!bet.cashedOut && bet.name.startsWith('You')) {
+                    bet.cashedOut = true;
+                    bet.cashoutAt = state.cashoutMultiplier.toFixed(2);
+                }
+            });
+        }
+
+        // Toggle Auto Cashout
+        function toggleAutoCashout() {
+            state.autoCashoutEnabled = !state.autoCashoutEnabled;
+            elements.autoCashoutToggle.classList.toggle('active', state.autoCashoutEnabled);
+        }
+
+        // Event Listeners
+        elements.placeBetBtn.addEventListener('click', placeBet);
+        elements.cancelBetBtn.addEventListener('click', cancelBet);
+        elements.cashoutBtn.addEventListener('click', cashOut);
+        elements.autoCashoutToggle.addEventListener('click', toggleAutoCashout);
+
+        document.querySelectorAll('.quick-bet-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const amount = parseFloat(btn.dataset.amount);
+                elements.betAmount.value = amount;
+            });
+        });
+
+        elements.autoCashoutValue.addEventListener('change', (e) => {
+            state.autoCashoutValue = parseFloat(e.target.value);
+        });
+
+        // Initialize
+        function init() {
+            updateBalance();
+            updateStats();
+            drawCanvas();
+            startCountdown();
+        }
+
+        init();
+    </script>
+</body>
+</html>
+
