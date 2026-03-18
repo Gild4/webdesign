@@ -1,0 +1,114 @@
+.root {
+  --primary-color: #3498db;
+  --secondary-color: #2ecc71;
+  --error-color: #e74c3c;
+  --font-family: 'Arial', sans-serif;
+  --font-size: 16px;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-family);
+  font-size: var(--font-size);
+  background-color: #f4f4f4;
+  color: #333;
+}
+
+header {
+  background-color: var(--primary-color);
+  color: white;
+  padding: 15px;
+  text-align: center;
+}
+
+.logo {
+  font-size: 2em;
+}
+
+game-area {
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+}
+
+canvas {
+  border: 1px solid #ddd;
+  max-width: 100%;
+}
+
+.betting-panel {
+  margin-top: 20px;
+  background-color: white;
+  padding: 20px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+button {
+  background-color: var(--secondary-color);
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+button:focus {
+  outline: 2px solid var(--primary-color);
+}
+
+form {
+  margin-top: 10px;
+}
+
+input, textarea {
+  width: 100%;
+  padding: 10px;
+  margin: 5px 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.toast {
+  padding: 15px;
+  margin: 10px 0;
+  background-color: var(--primary-color);
+  color: white;
+  border-radius: 5px;
+}
+
+footer {
+  background-color: #2c3e50;
+  color: white;
+  text-align: center;
+  padding: 10px;
+}
+
+/* Media Queries */
+@media (max-width: 1024px) {
+  game-area {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  header {
+    font-size: 1.5em;
+  }
+}
+
+@media (max-width: 480px) {
+  header {
+    font-size: 1.2em;
+  }
+
+  .toast {
+    font-size: 0.9em;
+  }
+}
