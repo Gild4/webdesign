@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Train Crash - Cash Out Game</title>
+    <title>Crash Bet - Cash Out Game</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -28,9 +28,6 @@
             --text-primary: #f8fafc;
             --text-secondary: #94a3b8;
             --border: #475569;
-            --train-color: #e74c3c;
-            --train-dark: #c0392b;
-            --track-color: #7f8c8d;
         }
 
         body {
@@ -39,15 +36,12 @@
             min-height: 100vh;
             color: var(--text-primary);
             overflow-x: hidden;
-            display: flex;
-            flex-direction: column;
         }
 
         .container {
             max-width: 1400px;
             margin: 0 auto;
             padding: 20px;
-            flex: 1;
         }
 
         /* Header */
@@ -200,8 +194,7 @@
         .canvas-container {
             position: relative;
             height: 450px;
-            background: linear-gradient(180deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
-            overflow: hidden;
+            background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
         }
 
         #gameCanvas {
@@ -211,19 +204,15 @@
 
         .multiplier-display {
             position: absolute;
-            top: 30px;
+            top: 50%;
             left: 50%;
-            transform: translateX(-50%);
+            transform: translate(-50%, -50%);
             text-align: center;
             z-index: 10;
-            background: rgba(15, 23, 42, 0.8);
-            padding: 16px 32px;
-            border-radius: 16px;
-            border: 1px solid var(--border);
         }
 
         .multiplier-value {
-            font-size: 56px;
+            font-size: 72px;
             font-weight: 800;
             background: linear-gradient(135deg, var(--primary), var(--success));
             -webkit-background-clip: text;
@@ -233,11 +222,9 @@
         }
 
         .multiplier-label {
-            font-size: 14px;
+            font-size: 16px;
             color: var(--text-secondary);
             margin-top: 8px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
         }
 
         .crashed-overlay {
@@ -246,7 +233,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(239, 68, 68, 0.2);
+            background: rgba(239, 68, 68, 0.1);
             display: none;
             align-items: center;
             justify-content: center;
@@ -259,18 +246,10 @@
         }
 
         .crashed-text {
-            font-size: 56px;
+            font-size: 48px;
             font-weight: 800;
             color: var(--danger);
             text-transform: uppercase;
-            text-shadow: 0 0 30px rgba(239, 68, 68, 0.5);
-            animation: shake 0.5s ease-in-out;
-        }
-
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-10px); }
-            75% { transform: translateX(10px); }
         }
 
         .crashed-multiplier {
@@ -715,37 +694,43 @@
         }
 
         /* Footer Credit */
-        .footer {
-            background: var(--bg-card);
-            border-top: 1px solid var(--border);
-            padding: 24px 0;
+        .footer-credit {
+            text-align: center;
+            padding: 30px 0;
             margin-top: 40px;
+            border-top: 1px solid var(--border);
         }
 
-        .footer-content {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 20px;
-            display: flex;
-            justify-content: center;
+        .credit-badge {
+            display: inline-flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(16, 185, 129, 0.1));
+            border: 1px solid var(--border);
+            border-radius: 50px;
+            transition: all 0.3s;
         }
 
-        .footer-text {
+        .credit-badge:hover {
+            border-color: var(--primary);
+            box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
+        }
+
+        .credit-text {
             font-size: 14px;
             color: var(--text-secondary);
         }
 
-        .footer-text span {
+        .credit-text span {
             color: var(--primary);
             font-weight: 600;
         }
 
-        .footer-heart {
+        .credit-heart {
             color: var(--danger);
             animation: heartBeat 1.5s infinite;
-            display: inline-block;
+            font-size: 18px;
         }
 
         @keyframes heartBeat {
@@ -753,27 +738,14 @@
             50% { transform: scale(1.2); }
         }
 
-        .designer-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(16, 185, 129, 0.2));
-            padding: 6px 16px;
-            border-radius: 20px;
-            border: 1px solid var(--border);
-            margin-left: 12px;
-        }
-
-        .designer-badge svg {
-            width: 16px;
-            height: 16px;
-            fill: var(--primary);
-        }
-
         .designer-name {
-            font-weight: 600;
-            color: var(--text-primary);
-            font-size: 13px;
+            font-size: 16px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary), var(--success));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 1px;
         }
 
         /* Responsive */
@@ -784,7 +756,7 @@
             }
 
             .multiplier-value {
-                font-size: 40px;
+                font-size: 48px;
             }
 
             .canvas-container {
@@ -799,15 +771,6 @@
                 padding: 14px 20px;
                 font-size: 16px;
             }
-
-            .footer-content {
-                flex-direction: column;
-                gap: 12px;
-            }
-
-            .designer-badge {
-                margin-left: 0;
-            }
         }
     </style>
 </head>
@@ -816,8 +779,8 @@
         <!-- Header -->
         <header class="header">
             <div class="logo">
-                <div class="logo-icon">🚂</div>
-                <span class="logo-text">Train Crash</span>
+                <div class="logo-icon">🚀</div>
+                <span class="logo-text">CrashBet</span>
             </div>
             <div class="balance-display">
                 <div class="balance">
@@ -832,7 +795,7 @@
             <!-- Game Area -->
             <div class="game-area">
                 <div class="game-header">
-                    <h2 class="game-title">🚂 Train Crash Game</h2>
+                    <h2 class="game-title">🎮 Crash Game</h2>
                     <div class="game-status status-waiting" id="gameStatus">
                         <span class="status-dot"></span>
                         <span id="statusText">Waiting</span>
@@ -846,7 +809,7 @@
                         <div class="multiplier-label">Current Multiplier</div>
                     </div>
                     <div class="crashed-overlay" id="crashedOverlay">
-                        <div class="crashed-text">💥 CRASHED!</div>
+                        <div class="crashed-text">CRASHED</div>
                         <div class="crashed-multiplier" id="crashedMultiplier">2.45x</div>
                     </div>
                     <div class="countdown-overlay" id="countdownOverlay">
@@ -931,22 +894,15 @@
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="footer-content">
-            <p class="footer-text">
-                Made with <span class="footer-heart">❤</span> 
-                <span class="designer-badge">
-                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
-                    </svg>
-                    <span class="designer-name">Designed by Benson Maina</span>
-                </span>
-            </p>
-        </div>
-    </footer>
+        <!-- Footer Credit -->
+        <footer class="footer-credit">
+            <div class="credit-badge">
+                <span class="credit-heart">❤</span>
+                <span class="credit-text">Designed by <span class="designer-name">Benson Maina</span></span>
+            </div>
+        </footer>
+    </div>
 
     <!-- Toast Container -->
     <div class="toast-container" id="toastContainer"></div>
@@ -972,9 +928,7 @@
                 streak: 0
             },
             countdown: 5,
-            liveBets: [],
-            trainPosition: 0,
-            particles: []
+            liveBets: []
         };
 
         // DOM Elements
@@ -1006,7 +960,7 @@
         // Canvas Setup
         const ctx = elements.canvas.getContext('2d');
         let animationId = null;
-        let startTime = 0;
+        let graphPoints = [];
 
         function resizeCanvas() {
             const container = elements.canvas.parentElement;
@@ -1128,233 +1082,6 @@
             });
         }
 
-        // Draw Train
-        function drawTrain(x, y, scale) {
-            ctx.save();
-            ctx.translate(x, y);
-            ctx.scale(scale, scale);
-
-            // Train body (main)
-            ctx.fillStyle = '#e74c3c';
-            ctx.beginPath();
-            ctx.roundRect(-40, -25, 80, 35, 5);
-            ctx.fill();
-
-            // Train body (darker bottom)
-            ctx.fillStyle = '#c0392b';
-            ctx.beginPath();
-            ctx.roundRect(-40, 5, 80, 15, 3);
-            ctx.fill();
-
-            // Windows
-            ctx.fillStyle = '#3498db';
-            ctx.beginPath();
-            ctx.roundRect(-30, -18, 15, 15, 3);
-            ctx.fill();
-            ctx.beginPath();
-            ctx.roundRect(-10, -18, 15, 15, 3);
-            ctx.fill();
-            ctx.beginPath();
-            ctx.roundRect(10, -18, 15, 15, 3);
-            ctx.fill();
-
-            // Front window
-            ctx.fillStyle = '#2980b9';
-            ctx.beginPath();
-            ctx.roundRect(25, -20, 12, 20, 3);
-            ctx.fill();
-
-            // Chimney
-            ctx.fillStyle = '#2c3e50';
-            ctx.fillRect(-25, -40, 12, 18);
-            ctx.fillStyle = '#34495e';
-            ctx.fillRect(-28, -42, 18, 5);
-
-            // Smoke
-            if (state.gameStatus === 'running') {
-                const smokeOffset = Math.sin(Date.now() / 200) * 3;
-                ctx.fillStyle = 'rgba(100, 100, 100, 0.6)';
-                ctx.beginPath();
-                ctx.arc(-19 + smokeOffset, -50, 8, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.beginPath();
-                ctx.arc(-19 + smokeOffset - 5, -58, 6, 0, Math.PI * 2);
-                ctx.fill();
-            }
-
-            // Wheels
-            ctx.fillStyle = '#2c3e50';
-            // Back wheel
-            ctx.beginPath();
-            ctx.arc(-25, 20, 12, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.fillStyle = '#7f8c8d';
-            ctx.beginPath();
-            ctx.arc(-25, 20, 6, 0, Math.PI * 2);
-            ctx.fill();
-
-            // Middle wheel
-            ctx.fillStyle = '#2c3e50';
-            ctx.beginPath();
-            ctx.arc(0, 20, 12, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.fillStyle = '#7f8c8d';
-            ctx.beginPath();
-            ctx.arc(0, 20, 6, 0, Math.PI * 2);
-            ctx.fill();
-
-            // Front wheel
-            ctx.fillStyle = '#2c3e50';
-            ctx.beginPath();
-            ctx.arc(25, 20, 12, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.fillStyle = '#7f8c8d';
-            ctx.beginPath();
-            ctx.arc(25, 20, 6, 0, Math.PI * 2);
-            ctx.fill();
-
-            // Wheel connectors
-            ctx.strokeStyle = '#7f8c8d';
-            ctx.lineWidth = 3;
-            ctx.beginPath();
-            ctx.moveTo(-25, 20);
-            ctx.lineTo(25, 20);
-            ctx.stroke();
-
-            // Headlight
-            ctx.fillStyle = '#f1c40f';
-            ctx.beginPath();
-            ctx.arc(38, -5, 5, 0, Math.PI * 2);
-            ctx.fill();
-
-            // Headlight glow
-            if (state.gameStatus === 'running') {
-                const glow = ctx.createRadialGradient(38, -5, 0, 38, -5, 30);
-                glow.addColorStop(0, 'rgba(241, 196, 15, 0.8)');
-                glow.addColorStop(1, 'rgba(241, 196, 15, 0)');
-                ctx.fillStyle = glow;
-                ctx.beginPath();
-                ctx.arc(38, -5, 30, 0, Math.PI * 2);
-                ctx.fill();
-            }
-
-            ctx.restore();
-        }
-
-        // Draw Tracks
-        function drawTracks(width, height) {
-            const trackY = height - 80;
-
-            // Ground
-            const groundGradient = ctx.createLinearGradient(0, trackY, 0, height);
-            groundGradient.addColorStop(0, '#2d3436');
-            groundGradient.addColorStop(1, '#1a1a2e');
-            ctx.fillStyle = groundGradient;
-            ctx.fillRect(0, trackY, width, height - trackY);
-
-            // Track bed (gravel)
-            ctx.fillStyle = '#636e72';
-            ctx.fillRect(0, trackY, width, 15);
-
-            // Rails
-            ctx.fillStyle = '#7f8c8d';
-            ctx.fillRect(0, trackY - 5, width, 4);
-            ctx.fillRect(0, trackY + 8, width, 4);
-
-            // Sleepers (ties)
-            ctx.fillStyle = '#5d4e37';
-            const sleeperSpacing = 40;
-            const offset = (state.trainPosition * 5) % sleeperSpacing;
-            for (let i = -offset; i < width; i += sleeperSpacing) {
-                ctx.fillRect(i, trackY - 8, 12, 24);
-            }
-
-            // Track markers
-            ctx.fillStyle = '#95a5a6';
-            ctx.font = 'bold 14px Inter';
-            ctx.textAlign = 'center';
-            for (let i = 0; i <= 5; i++) {
-                const x = (width / 5) * i;
-                ctx.fillText(`${i}x`, x, trackY + 45);
-            }
-        }
-
-        // Draw Background
-        function drawBackground(width, height) {
-            // Sky gradient
-            const skyGradient = ctx.createLinearGradient(0, 0, 0, height - 80);
-            skyGradient.addColorStop(0, '#0f0f23');
-            skyGradient.addColorStop(0.5, '#1a1a3e');
-            skyGradient.addColorStop(1, '#2d2d5a');
-            ctx.fillStyle = skyGradient;
-            ctx.fillRect(0, 0, width, height - 80);
-
-            // Stars
-            ctx.fillStyle = '#ffffff';
-            for (let i = 0; i < 50; i++) {
-                const x = (Math.sin(i * 123.456) * 0.5 + 0.5) * width;
-                const y = (Math.cos(i * 78.901) * 0.5 + 0.5) * (height - 150);
-                const size = Math.random() * 2 + 1;
-                const opacity = Math.random() * 0.5 + 0.3;
-                ctx.globalAlpha = opacity;
-                ctx.beginPath();
-                ctx.arc(x, y, size, 0, Math.PI * 2);
-                ctx.fill();
-            }
-            ctx.globalAlpha = 1;
-
-            // Mountains in background
-            ctx.fillStyle = '#1a1a2e';
-            ctx.beginPath();
-            ctx.moveTo(0, height - 80);
-            for (let i = 0; i <= width; i += 50) {
-                const mountainHeight = Math.sin(i * 0.02) * 30 + Math.cos(i * 0.01) * 20;
-                ctx.lineTo(i, height - 80 - mountainHeight - 50);
-            }
-            ctx.lineTo(width, height - 80);
-            ctx.closePath();
-            ctx.fill();
-        }
-
-        // Draw Particles (explosion)
-        function drawParticles(width, height, crashX) {
-            const crashY = height - 100;
-
-            state.particles.forEach((particle, index) => {
-                particle.x += particle.vx;
-                particle.y += particle.vy;
-                particle.vy += 0.3;
-                particle.life -= 0.02;
-
-                if (particle.life > 0) {
-                    ctx.globalAlpha = particle.life;
-                    ctx.fillStyle = particle.color;
-                    ctx.beginPath();
-                    ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
-                    ctx.fill();
-                } else {
-                    state.particles.splice(index, 1);
-                }
-            });
-
-            ctx.globalAlpha = 1;
-
-            // Continue generating particles after crash
-            if (state.gameStatus === 'crashed' && state.particles.length < 100) {
-                for (let i = 0; i < 3; i++) {
-                    state.particles.push({
-                        x: crashX,
-                        y: crashY,
-                        vx: (Math.random() - 0.5) * 15,
-                        vy: (Math.random() - 0.5) * 15,
-                        size: Math.random() * 8 + 4,
-                        color: ['#e74c3c', '#f39c12', '#f1c40f', '#95a5a6'][Math.floor(Math.random() * 4)],
-                        life: 1
-                    });
-                }
-            }
-        }
-
         // Draw Game Canvas
         function drawCanvas() {
             const width = elements.canvas.offsetWidth;
@@ -1362,44 +1089,91 @@
 
             ctx.clearRect(0, 0, width, height);
 
-            // Draw background
-            drawBackground(width, height);
+            // Draw grid
+            ctx.strokeStyle = 'rgba(71, 85, 105, 0.3)';
+            ctx.lineWidth = 1;
 
-            // Draw tracks
-            drawTracks(width, height);
-
-            // Calculate train position based on multiplier
-            const maxMultiplier = 5;
-            const progress = Math.min((state.currentMultiplier - 1) / (maxMultiplier - 1), 1);
-            const trackY = height - 100;
-            const startX = 50;
-            const endX = width - 100;
-            const trainX = startX + (endX - startX) * progress;
-
-            state.trainPosition = progress;
-
-            // Draw train
-            const trainScale = 0.8 + progress * 0.2;
-            drawTrain(trainX, trackY, trainScale);
-
-            // Draw particles if crashed
-            if (state.gameStatus === 'crashed') {
-                drawParticles(width, height, trainX);
+            for (let i = 0; i < 5; i++) {
+                const x = (width / 5) * i;
+                ctx.beginPath();
+                ctx.moveTo(x, 0);
+                ctx.lineTo(x, height);
+                ctx.stroke();
             }
 
-            // Draw speed lines when running
-            if (state.gameStatus === 'running') {
-                ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
-                ctx.lineWidth = 2;
-                for (let i = 0; i < 10; i++) {
-                    const lineX = (trainX - 100 + Math.random() * 80) % width;
-                    const lineY = Math.random() * (height - 150);
-                    const lineLength = Math.random() * 30 + 20;
+            for (let i = 0; i < 5; i++) {
+                const y = (height / 5) * i;
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.lineTo(width, y);
+                ctx.stroke();
+            }
+
+            // Draw graph line
+            if (graphPoints.length > 1 && state.gameStatus === 'running') {
+                const gradient = ctx.createLinearGradient(0, 0, width, height);
+                gradient.addColorStop(0, '#10b981');
+                gradient.addColorStop(1, '#6366f1');
+
+                ctx.strokeStyle = gradient;
+                ctx.lineWidth = 4;
+                ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
+
+                ctx.beginPath();
+                graphPoints.forEach((point, index) => {
+                    const x = (point.t / 10) * width;
+                    const y = height - (point.m / 10) * height;
+
+                    if (index === 0) {
+                        ctx.moveTo(x, y);
+                    } else {
+                        ctx.lineTo(x, y);
+                    }
+                });
+                ctx.stroke();
+
+                // Draw area under curve
+                ctx.lineTo(width, height);
+                ctx.lineTo(0, height);
+                ctx.closePath();
+
+                const areaGradient = ctx.createLinearGradient(0, 0, 0, height);
+                areaGradient.addColorStop(0, 'rgba(16, 185, 129, 0.3)');
+                areaGradient.addColorStop(1, 'rgba(99, 102, 241, 0.1)');
+                ctx.fillStyle = areaGradient;
+                ctx.fill();
+
+                // Draw rocket/point
+                const lastPoint = graphPoints[graphPoints.length - 1];
+                if (lastPoint) {
+                    const x = (lastPoint.t / 10) * width;
+                    const y = height - (lastPoint.m / 10) * height;
+
+                    // Glow effect
+                    const glow = ctx.createRadialGradient(x, y, 0, x, y, 20);
+                    glow.addColorStop(0, 'rgba(16, 185, 129, 0.8)');
+                    glow.addColorStop(1, 'rgba(16, 185, 129, 0)');
+                    ctx.fillStyle = glow;
                     ctx.beginPath();
-                    ctx.moveTo(lineX, lineY);
-                    ctx.lineTo(lineX - lineLength, lineY);
-                    ctx.stroke();
+                    ctx.arc(x, y, 20, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    // Point
+                    ctx.fillStyle = '#10b981';
+                    ctx.beginPath();
+                    ctx.arc(x, y, 8, 0, Math.PI * 2);
+                    ctx.fill();
                 }
+            }
+
+            // Draw multiplier labels on Y-axis
+            ctx.fillStyle = '#94a3b8';
+            ctx.font = '12px Inter';
+            ctx.textAlign = 'right';
+            for (let i = 1; i <= 5; i++) {
+                const y = height - (height / 5) * i;
+                ctx.fillText(`${i}x`, width - 10, y + 4);
             }
         }
 
@@ -1407,32 +1181,23 @@
         function gameLoop() {
             if (state.gameStatus !== 'running') return;
 
-            const timeElapsed = (Date.now() - startTime) / 1000;
+            const timeElapsed = Date.now() / 1000;
             state.currentMultiplier = 1.00 + (Math.pow(timeElapsed, 2) * 0.1);
+
+            graphPoints.push({
+                t: timeElapsed,
+                m: state.currentMultiplier
+            });
 
             elements.multiplierValue.textContent = `${state.currentMultiplier.toFixed(2)}x`;
 
-            // Change color based on multiplier
-            if (state.currentMultiplier < 2) {
-                elements.multiplierValue.style.background = 'linear-gradient(135deg, #10b981, #6366f1)';
-            } else if (state.currentMultiplier < 5) {
-                elements.multiplierValue.style.background = 'linear-gradient(135deg, #f59e0b, #ef4444)';
-            } else {
-                elements.multiplierValue.style.background = 'linear-gradient(135deg, #ef4444, #dc2626)';
-            }
-            elements.multiplierValue.style.webkitBackgroundClip = 'text';
-            elements.multiplierValue.style.webkitTextFillColor = 'transparent';
-
-            // Check auto cashout
             if (state.autoCashoutEnabled && !state.hasCashedOut && state.hasBet) {
                 if (state.currentMultiplier >= state.autoCashoutValue) {
                     cashOut();
                 }
             }
 
-            // Check crash
             if (state.currentMultiplier >= state.crashPoint) {
-                state.currentMultiplier = state.crashPoint;
                 crash();
                 return;
             }
@@ -1449,7 +1214,6 @@
             elements.countdownOverlay.classList.add('active');
             elements.crashedOverlay.classList.remove('active');
             state.countdown = 5;
-            state.particles = [];
 
             const countdownInterval = setInterval(() => {
                 state.countdown--;
@@ -1469,8 +1233,7 @@
             state.crashPoint = generateCrashPoint();
             state.hasCashedOut = false;
             state.cashoutMultiplier = 0;
-            state.particles = [];
-            startTime = Date.now();
+            graphPoints = [];
 
             updateGameStatus('running', 'Running');
             elements.multiplierValue.textContent = '1.00x';
@@ -1486,7 +1249,6 @@
             }
 
             generateLiveBets();
-            drawCanvas();
             gameLoop();
 
             console.log('Crash Point (debug):', state.crashPoint.toFixed(2));
@@ -1507,37 +1269,10 @@
             elements.multiplierValue.style.webkitBackgroundClip = 'text';
             elements.multiplierValue.style.webkitTextFillColor = 'transparent';
 
-            // Create explosion particles
-            const width = elements.canvas.offsetWidth;
-            const height = elements.canvas.offsetHeight;
-            const crashX = 50 + (width - 150) * Math.min((state.crashPoint - 1) / 4, 1);
-            const crashY = height - 100;
-
-            for (let i = 0; i < 50; i++) {
-                state.particles.push({
-                    x: crashX,
-                    y: crashY,
-                    vx: (Math.random() - 0.5) * 20,
-                    vy: (Math.random() - 0.5) * 20,
-                    size: Math.random() * 10 + 5,
-                    color: ['#e74c3c', '#f39c12', '#f1c40f', '#95a5a6', '#2c3e50'][Math.floor(Math.random() * 5)],
-                    life: 1
-                });
-            }
-
-            // Animate particles
-            function animateParticles() {
-                if (state.gameStatus === 'crashed' && state.particles.length > 0) {
-                    drawCanvas();
-                    requestAnimationFrame(animateParticles);
-                }
-            }
-            animateParticles();
-
             if (state.hasBet && !state.hasCashedOut) {
                 state.stats.losses++;
                 state.stats.streak = state.stats.streak > 0 ? -1 : -1;
-                showToast(`Train crashed at ${state.crashPoint.toFixed(2)}x. You lost $${state.currentBet.toFixed(2)}`, 'error');
+                showToast(`Round crashed at ${state.crashPoint.toFixed(2)}x. You lost $${state.currentBet.toFixed(2)}`, 'error');
             }
 
             state.liveBets.forEach(bet => {
@@ -1557,7 +1292,7 @@
 
             setTimeout(() => {
                 startCountdown();
-            }, 4000);
+            }, 3000);
         }
 
         // Place Bet
@@ -1589,7 +1324,7 @@
             elements.cancelBetBtn.disabled = false;
             elements.betAmount.disabled = true;
 
-            showToast(`Bet placed: $${betAmount.toFixed(2)} 🚂`, 'success');
+            showToast(`Bet placed: $${betAmount.toFixed(2)}`, 'success');
         }
 
         // Cancel Bet
@@ -1630,7 +1365,7 @@
 
             elements.cashoutBtn.disabled = true;
 
-            showToast(`Cashed out at ${state.cashoutMultiplier.toFixed(2)}x! Won $${winAmount.toFixed(2)} 🎉`, 'success');
+            showToast(`Cashed out at ${state.cashoutMultiplier.toFixed(2)}x! Won $${winAmount.toFixed(2)}`, 'success');
 
             state.liveBets.forEach(bet => {
                 if (!bet.cashedOut && bet.name.startsWith('You')) {
